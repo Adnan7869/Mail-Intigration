@@ -16,9 +16,106 @@
           <th scope="col">batch</th>
           <th scope="col">contact</th>
           <th scope="col">mail</th>
+          <th scope="col">select</th>
+          <th scope="col">action</th>
         </tr>
       </thead>
-      <tbody>
+      
+<tbody>
+  {% for j in shows %}
+    <tr>
+      <th scope="row">{{j.id}}</th>
+      <td>{{j.name}}</td>
+      <td>{{j.college_name}}</td>
+      <td>{{j.batch}}</td>
+      <td>{{j.cotact}}</td>
+      <td>{{j.mail}}</td>
+      <td>
+        <input type="checkbox" name="selected-emails" value="{{j.mail}}">
+      </td>
+      <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        SendMail
+      </button>
+      
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Mail</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form action="{% url 'sendmail' j.id %}" method="POST"> {% csrf_token %}
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Subject</label>
+                    <input type="text" class="form-control" name="subject" id="subject">
+                </div>
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">message</label>
+                    <textarea name="message" class="form-control" id="message" cols="30" rows="10"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="sumbit" class="btn btn-primary">Send</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form></td>
+    </tr>
+  {% endfor %}
+</tbody>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal"  onclick="getSelectedEmails()" data-bs-target="#multiple-modal">Send Mail to Selected</button>
+
+<!-- Modal -->
+<div class="modal fade" id="multiple-modal" tabindex="-1" aria-labelledby="multipleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="multipleModalLabel">Mail</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{% url 'multimail' %}" method="POST"> {% csrf_token %}
+          <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Subject</label>
+            <input type="text" class="form-control" name="subject" id="subject">
+          </div>
+          <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">message</label>
+            <textarea name="message" class="form-control" id="message" cols="30" rows="10"></textarea>
+          </div>
+          <input type="hidden" id="selected-emails" name="selected-emails">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" onclick="getSelectedEmails()">Send</button>
+      </div>
+      </form>
+      </div>
+      
+        </div>
+      </div>
+      <script>
+        function getSelectedEmails(){
+          //initialize an empty array to store the selected emails
+          var selectedEmails = [];
+          //get all the checkboxes with the name 'selected-emails'
+          var checkboxes = document.getElementsByName('selected-emails');
+          //loop through the checkboxes and check which ones are checked
+          for(var i=0; i<checkboxes.length; i++){
+            if(checkboxes[i].checked){
+              //if a checkbox is checked, add its value (email address) to the selectedEmails array
+              selectedEmails.push(checkboxes[i].value);
+            }
+          }
+          //set the value of the hidden input field to the selectedEmails array
+          document.getElementById('selected-emails').value = selectedEmails;
+        }
+        </script>
+      {% comment %} <tbody>
           {% for j in shows %}
         <tr>
           <th scope="row">{{j.id}}</th>
@@ -63,7 +160,7 @@
         </tr>
         {% endfor %}
       </tbody>
-    </table>
+    </table> {% endcomment %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
   </body>
 </html>

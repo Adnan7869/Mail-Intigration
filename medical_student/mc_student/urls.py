@@ -7,4 +7,5 @@ urlpatterns = [
     path('showcivil/',views.showengineering,name="showcivil"),
     path('showmedical/',views.showmedical,name="showmedical"),
     path('sendemail/<int:id>',views.sendmail,name="sendmail"),
+    path('multimail/',views.multimail,name="multimail"),
 ]
